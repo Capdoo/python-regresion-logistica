@@ -13,60 +13,34 @@ def loss(y, y_hat):
 
 def gradients(X, y, y_hat):
     
-    # X --> Input.
-    # y --> true/target value.
-    # y_hat --> hypothesis/predictions.
-    # w --> weights (parameter).
-    # b --> bias (parameter).
+    # X --> Entrada.
+    # y --> true/target valores.
+    # y_hat --> hipotesis/predicciones.
+    # w --> pesos (parametros).
+    # b --> bias (parametros).
     
-    # m-> number of training examples.
+    # m-> numero de ejmplos de entrenamiento.
     m = X.shape[0]
     
-    # Gradient of loss w.r.t weights.
+    # Gradiente de perdida w.r.t wesos.
     dw = (1/m)*np.dot(X.T, (y_hat - y))
     
-    # Gradient of loss w.r.t bias.
+    # Gradiente de perdida w.r.t bias.
     db = (1/m)*np.sum((y_hat - y)) 
     
     return dw, db
-
-def plot_decision_boundary(X, w, b):
-    
-    # X --> Inputs
-    # w --> weights
-    # b --> bias
-    
-    # The Line is y=mx+c
-    # So, Equate mx+c = w.X + b
-    # Solving we find m and c
-    x1 = [min(X[:,0]), max(X[:,0])]
-    m = -w[0]/w[1]
-    c = -b/w[1]
-    x2 = m*x1 + c
-    
-    # Plotting
-    fig = plt.figure(figsize=(10,8))
-    plt.plot(X[:, 0][y==0], X[:, 1][y==0], "g^")
-    plt.plot(X[:, 0][y==1], X[:, 1][y==1], "bs")
-    plt.xlim([-2, 2])
-    plt.ylim([0, 2.2])
-    plt.xlabel("feature 1")
-    plt.ylabel("feature 2")
-    plt.title('Decision Boundary')
-    plt.plot(x1, x2, 'y-')
-
 
 
 
 def normalize(X):
     
-    # X --> Input.
+    # X --> Entrada.
     
-    # m-> number of training examples
-    # n-> number of features 
+    # m-> numero de ejemplos de entrenamient0
+    # n-> numero de caracteristicas 
     m, n = X.shape
     
-    # Normalizing all the n features of X.
+    # Normalizando todas las n caracteristicas de X.
     for i in range(n):
         X = (X - X.mean(axis=0))/X.std(axis=0)
         
@@ -77,70 +51,70 @@ def normalize(X):
 
 def train(X, y, bs, epochs, lr):
     
-    # X --> Input.
-    # y --> true/target value.
-    # bs --> Batch Size.
-    # epochs --> Number of iterations.
-    # lr --> Learning rate.
+    # X --> Entrada.
+    # y --> true/target valor.
+    # bs --> Tamaño del batch o lote.
+    # epochs --> Numero de iteraciones.
+    # lr --> Tasa de aprendizaje.
         
-    # m-> number of training examples
-    # n-> number of features 
+    # m-> numero de ejemplos de entrenamiento
+    # n-> numero de caracteristicas o campos
     m, n = X.shape
     
-    # Initializing weights and bias to zeros.
+    # Inicializando pesos y bias a cero.
     w = np.zeros((n,1))
     b = 0
     
-    # Reshaping y.
+    # Reshape de y.
     y = y.reshape(m,1)
     
-    # Normalizing the inputs.
+    # Normalizando las entradas.
     x = normalize(X)
     
-    # Empty list to store losses.
+    # Lista vacia para almancenar las perdidas
     losses = []
     
-    # Training loop.
+    # Bucle de entrenamiento.
     for epoch in range(epochs):
         for i in range((m-1)//bs + 1):
             
-            # Defining batches. SGD.
+            # Definiendo lotes. SGD.
             start_i = i*bs
             end_i = start_i + bs
             xb = X[start_i:end_i]
             yb = y[start_i:end_i]
             
-            # Calculating hypothesis/prediction.
+            # Calculando hipotesis/prediccion.
             y_hat = sigmoid(np.dot(xb, w) + b)
             
-            # Getting the gradients of loss w.r.t parameters.
+            # Obteniendo la gradiente de perdida, parametros w.r.t.
             dw, db = gradients(xb, yb, y_hat)
             
-            # Updating the parameters.
+            # Actualizando los parametros.
             w -= lr*dw
             b -= lr*db
         
-        # Calculating loss and appending it in the list.
+        # Calculando la perdida y append en la lista.
         l = loss(y, sigmoid(np.dot(X, w) + b))
         losses.append(l)
         
-    # returning weights, bias and losses(List).
+    # retornando pesos, bias y perdidas(Lista).
     return w, b, losses
 
 def predict(X):
     
-    # X --> Input.
+    # X --> Entrada.
     
-    # Normalizing the inputs.
+    # Normalizando las entradas.
     x = normalize(X)
     
-    # Calculating presictions/y_hat.
+    # Calculando predicciones/y_hat.
     preds = sigmoid(np.dot(X, w) + b)
     
-    # Empty List to store predictions.
+    # Lista vacia para almacenar las predicciones.
     pred_class = []
-    # if y_hat >= 0.5 --> round up to 1
-    # if y_hat < 0.5 --> round up to 1
+    # if y_hat >= 0.5 --> redondear a 1
+    # if y_hat < 0.5 --> redondear a 1
     pred_class = [1 if i > 0.5 else 0 for i in preds]
     
     return np.array(pred_class)
