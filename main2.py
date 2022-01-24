@@ -145,32 +145,9 @@ def predict(X):
     
     return np.array(pred_class)
 
-
-from sklearn.datasets import make_moons
-X, y = make_moons(n_samples=100, noise=0.24)
-
-# Training 
-w, b, l = train(X, y, bs=100, epochs=1000, lr=0.01)
-# Plotting Decision Boundary
-plot_decision_boundary(X, w, b)
-
 def accuracy(y, y_hat):
     accuracy = np.sum(y == y_hat) / len(y)
     return accuracy
-
-
-from sklearn.datasets import make_moons
-X, y = make_moons(n_samples=100, noise=0.24)
-
-# Training 
-w, b, l = train(X, y, bs=100, epochs=1000, lr=0.01)
-# Plotting Decision Boundary
-plot_decision_boundary(X, w, b)
-
-
-accuracy(y, predict(X))
-
-
 
 
 data = pd.read_csv("Grupo8Preprocesamiento.csv", index_col=0)
@@ -189,9 +166,8 @@ y = y_df.to_numpy()
 
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.30,random_state=100)
 
-# Training 
+# Entrenando 
 w, b, l = train(X_train, y_train, bs=100, epochs=1000, lr=0.01)
-# Plotting Decision Boundary
 
 accuracy(y_test, predict(X_test))
 
@@ -199,12 +175,19 @@ accuracy(y_test, predict(X_test))
 prediccion_test = predict(X_test)
 print(prediccion_test)
 
-a = X_df.sample().to_numpy()
-print(a)
+
+
+alumno_prueba = data.sample()
+
+alumno_x = alumno_prueba.drop('ES INGRESANTE?_SI',axis=1)
+alumno_y = alumno_prueba['ES INGRESANTE?_SI']
+
+a = alumno_x.to_numpy()
+print("Este es el alumno",a)
 
 
 prediccion_final = predict(a)
-print(prediccion_final)
+print("Esta es la prediccion",prediccion_final)
 
-#data.iloc[424]
+print("Esto deberia salir:", alumno_y.to_numpy())
 
